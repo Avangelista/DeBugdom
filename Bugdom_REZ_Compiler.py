@@ -2,17 +2,40 @@
 # Rory 2020
 # Compiles a directory of Bugdom assets into a .Rez file to be used in game
 
+import sys
+import os
 from zlib import compress
 
-with open('file_list.txt', 'r') as f:
-    fileList = f.read().splitlines()
+if len(sys.argv) >= 3:
+    outFile = sys.argv[2]
+else:
+    outFile = 'Bugdom.Rez'
+
+if len(sys.argv) >= 2:
+    resDir = sys.argv[1]
+else:
+    print('Usage: ' + sys.argv[0] + ' path/to/asset/directory [output_file_name]')
+    sys.exit()
+
+try:
+    with open('file_list.txt', 'r') as f:
+        fileList = f.read().splitlines()
+except OSError:
+    print('ERROR: "file_list.txt" not found!')
+    sys.exit()
+
+print('Reading files from ' + resDir + '...')
 
 totalFileNameLen = 0
 totalFileDataLen = 0
 archiveFiles = []
 for file in fileList:
-    with open(file, 'rb') as f:
-        data = f.read()
+    try:
+        with open(os.path.join(resDir, file), 'rb') as f:
+            data = f.read()
+    except OSError:
+        print('ERROR: Necessary file "' + file + '" not found in directory!')
+        sys.exit()
     formatted_name = file.replace('/', ':').encode() + b'\x00'
     compressed = compress(data)
 
@@ -30,6 +53,8 @@ for file in fileList:
     totalFileDataLen += 4 + len(compressed)
 
 nFiles = len(archiveFiles)
+
+print('Setting up file structure...')
 
 ID = b'BRGR'
 VERSION = b'\x01\x00\x00\x00'
@@ -54,7 +79,9 @@ for f in archiveFiles:
     compressed_data = f['compressed_data']
     DATA += size.to_bytes(4, byteorder='little') + compressed_data
 
-with open('out.rez', 'wb') as f:
+print('Writing to ' + outFile + '...')
+
+with open(outFile, 'wb') as f:
     f.write(ID)
     f.write(VERSION)
     f.write(INFO_SIZE)
@@ -63,3 +90,5 @@ with open('out.rez', 'wb') as f:
     f.write(INDEX)
     f.write(NAMES)
     f.write(DATA)
+
+print('Done!')
