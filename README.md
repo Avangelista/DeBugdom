@@ -1,4 +1,4 @@
-# Bugdom: Research and Tools
+# The DeBugdom Project
 
 This repository contains a bunch of scripts I'm developing to be used with Bugdom for Windows.
 

@@ -33,7 +33,8 @@ nFiles = len(archiveFiles)
 
 ID = b'BRGR'
 VERSION = b'\x01\x00\x00\x00'
-FILLER_1 = b'\x01\x00\x00\x00\x01\x00\x00\x00'
+# insert our tagline here... as it doesn't seem to ruin anything
+FILLER_1 = b'DBUG\x01\x00\x00\x00'
 N_FILES = nFiles.to_bytes(4, byteorder='little')
 infoSize = 12 + (12 * nFiles) + totalFileNameLen
 INFO_SIZE = infoSize.to_bytes(4, byteorder='little')
