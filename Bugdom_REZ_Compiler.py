@@ -2,6 +2,9 @@
 # Rory 2020
 # Compiles a directory of Bugdom assets into a .Rez file to be used in game
 
+# Requires file_list.txt to work correctly!
+# Get it here: https://github.com/nutmeg-5000/bugdom/blob/master/file_list.txt
+
 import sys
 import os
 from zlib import compress
